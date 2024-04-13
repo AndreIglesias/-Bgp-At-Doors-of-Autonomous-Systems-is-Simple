@@ -1,9 +1,10 @@
 # BGP At Doors of Autonomous Systems is Simple
 
 <p align="center">
-  <img src="gns3.png" width="35%"/> 
-  <img src="docker.png" width="40%"/>
-  <img src="vagrant.png" width="30%"/>
+  <img src="gns3.png" width="20%"/> 
+  <br/>
+  <img src="vagrant.png" style="width: 20%;" />
+  <img src="docker.png" style="width: 25%;" />
 </p>
 
 ## Introduction
