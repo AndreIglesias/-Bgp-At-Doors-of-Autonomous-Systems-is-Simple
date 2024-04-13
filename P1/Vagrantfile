@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/alpine319"
+  config.vm.provider :virtualbox do |vb|
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+    # Update and upgrade the system
+    sudo apk update && sudo apk upgrade -q
+
+    # Install dependencies
+    sudo apk add -q python3 py3-pip py3-qt5 py3-setuptools\
+                    py3-aiohttp py3-aiohttp-cors git bash\
+                    qemu qemu-system-x86_64 gcc python3-dev\
+                    musl-dev linux-headers docker
+
+    # Start Docker service
+    echo "🐳 starting docker service..."
+    sudo rc-service docker start
+
+    # Enable Docker service
+    echo "🐳 Enabling docker service..."
+    sudo rc-update add docker
+
+    # Verify Docker installation
+    docker --version
+  
+    # Install GNS3
+    echo "🚀 Installing GNS3..."
+    sudo pip3 install gns3-server > /dev/null 2>&1
+
+    # Run GNS3
+    echo "🚀 Running GNS3..."
+    gns3server &
+
+  SHELL
+
+  config.vm.define "p1" do |server|
+    server.vm.hostname = "p1"
+    server.vm.network "forwarded_port", guest: 3080, host: 3080
+  end
+
+end
