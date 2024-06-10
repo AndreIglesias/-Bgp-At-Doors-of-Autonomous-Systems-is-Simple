@@ -1,0 +1,4 @@
+# Use Alpine Linux as base image
+FROM alpine:latest
+
+RUN apk add --no-cache tcpdump iputils
