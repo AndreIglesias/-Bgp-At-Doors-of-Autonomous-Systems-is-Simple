@@ -1,4 +1,4 @@
-FROM quay.io/frrouting/frr:9.0.2 
+FROM quay.io/frrouting/frr:9.1.0
 
 # https://docs.frrouting.org/en/latest/setup.html#daemons-configuration-file
 # https://quay.io/repository/frrouting/frr
@@ -6,9 +6,11 @@ FROM quay.io/frrouting/frr:9.0.2
 
 ENV DAEMONS="zebra bgpd ospfd isisd"
 
-RUN echo 'service integrated-vtysh-config' > /etc/frr/vtysh.conf && \
-    echo "zebra=yes" > /etc/frr/daemons && \
-    echo "bgpd=yes" >> /etc/frr/daemons && \
-    echo "ospfd=yes" >> /etc/frr/daemons && \
-    echo "isisd=yes" >> /etc/frr/daemons && \
-    chown frr:frr /etc/frr/daemons
+# The watchfrr, zebra and staticd daemons are always started.
+RUN sed -i -e "s/bgpd=no/bgpd=yes/g" /etc/frr/daemons && \
+    sed -i -e "s/ospfd=no/ospfd=yes/g" /etc/frr/daemons && \
+    sed -i -e "s/isisd=no/isisd=yes/g" /etc/frr/daemons && \
+    sed -i '/^#frr_profile="traditional"/s/^#//' /etc/frr/daemons && \
+    touch /etc/frr/vtysh.conf
+
+ENTRYPOINT sh -c "/usr/lib/frr/docker-start & exec sh"

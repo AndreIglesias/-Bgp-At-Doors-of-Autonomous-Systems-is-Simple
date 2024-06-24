@@ -41,10 +41,15 @@ Vagrant.configure("2") do |config|
     # Run GNS3
     echo "🚀 Running GNS3..."
     gns3server &
+    sleep 5
+    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/router_template.json
+    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/host_template.json
+    curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/import?name=p1 -H "Content-Type: multipart/form-data" -F "file=@/vagrant/p1.gns3project"
+    
   SHELL
 
   config.vm.define "p1" do |server|
     server.vm.hostname = "p1"
-    server.vm.network "forwarded_port", guest: 3080, host: 3080
+    server.vm.network "forwarded_port", guest: 3080, host: 3081
   end
 end

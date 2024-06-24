@@ -1,0 +1,23 @@
+{
+  "adapters": 3,
+  "builtin": false,
+  "category": "router",
+  "compute_id": "local",
+  "console_auto_start": false,
+  "console_http_path": "/",
+  "console_http_port": 80,
+  "console_resolution": "1024x768",
+  "console_type": "telnet",
+  "custom_adapters": [],
+  "default_name_format": "{name}-{0}",
+  "environment": "",
+  "extra_hosts": "",
+  "image": "p1-frr:latest",
+  "name": "router_ciglesia",
+  "start_command": "sh",
+  "symbol": ":/symbols/classic/route_switch_processor.svg",
+  "template_id": "123e4567-e89b-12d3-a456-000000000000",
+  "template_type": "docker",
+  "usage": "",
+  "extra_volumes": []
+}
