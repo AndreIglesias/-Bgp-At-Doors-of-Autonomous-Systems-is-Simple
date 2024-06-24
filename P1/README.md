@@ -42,7 +42,11 @@ We also use Busybox or an equivalent to provide a minimal environment for runnin
 
 The following diagram shows the two Docker images configured in GNS3:
 
-![alt text](../docs/p1.gns3.png)
+![Topology](../docs/p1.gns3.png)
+
+This is the router:
+
+![Router](../docs/p1.router.png)
 
 ## Conclusion
 
