@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
     docker --version
 
     # Build Docker images
-    cd /vagrant
+    cd /vagrant/P1
     echo "🚀 Building Docker images..."
     docker build -t p1-alpine -f Dockerfile.alpine .
     docker build -t p1-frr -f Dockerfile.frr .
@@ -42,11 +42,13 @@ Vagrant.configure("2") do |config|
     echo "🚀 Running GNS3..."
     gns3server &
     sleep 5
-    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/router_template.json
-    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/host_template.json
+
+    # P1 -- A router and a host
+    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/P1/router_template.json
+    curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/P1/host_template.json
 
     sleep 1 # Import the project
-    curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/import?name=p1 -H "Content-Type: multipart/form-data" -F "file=@/vagrant/p1.gns3project"
+    curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/import?name=p1 -H "Content-Type: multipart/form-data" -F "file=@/vagrant/P1/p1.gns3project"
     sleep 1 # Start the project
     curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/open
     sleep 1 # Start all nodes
@@ -54,8 +56,8 @@ Vagrant.configure("2") do |config|
     
   SHELL
 
-  config.vm.define "p1" do |server|
-    server.vm.hostname = "p1"
+  config.vm.define "bgp" do |server|
+    server.vm.hostname = "bgp"
     server.vm.network "forwarded_port", guest: 3080, host: 3081
   end
 end
