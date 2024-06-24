@@ -33,10 +33,10 @@ Vagrant.configure("2") do |config|
     docker --version
 
     # Build Docker images
-    cd /vagrant/P1
+    cd /vagrant
     echo "🚀 Building Docker images..."
-    docker build -t p1-alpine -f Dockerfile.alpine .
-    docker build -t p1-frr -f Dockerfile.frr .
+    docker build -t p1-alpine -f P1/Dockerfile.alpine P1/
+    docker build -t p1-frr -f P1/Dockerfile.frr P1/
 
     # Run GNS3
     echo "🚀 Running GNS3..."
