@@ -14,7 +14,7 @@
   "extra_hosts": "",
   "image": "p1-frr:latest",
   "name": "router_ciglesia",
-  "start_command": "sh",
+  "start_command": "sh -c '/usr/lib/frr/docker-start & exec sh",
   "symbol": ":/symbols/classic/route_switch_processor.svg",
   "template_id": "123e4567-e89b-12d3-a456-000000000000",
   "template_type": "docker",
