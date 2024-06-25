@@ -32,16 +32,15 @@ Vagrant.configure("2") do |config|
     # Verify Docker installation
     docker --version
 
+    # Run GNS3
+    echo "🚀 Running GNS3..."
+    gns3server &
+
     # Build Docker images
     cd /vagrant
     echo "🚀 Building Docker images..."
     docker build -t p1-alpine -f P1/Dockerfile.alpine P1/
     docker build -t p1-frr -f P1/Dockerfile.frr P1/
-
-    # Run GNS3
-    echo "🚀 Running GNS3..."
-    gns3server &
-    sleep 5
 
     # P1 -- A router and a host
     curl -X POST http://localhost:3080/v2/templates -H "Content-Type: application/json" -d @/vagrant/P1/router_template.json
@@ -53,6 +52,10 @@ Vagrant.configure("2") do |config|
     curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/open
     sleep 1 # Start all nodes
     curl -X POST http://localhost:3080/v2/projects/12345678-123e-12c3-1c23-000000000000/nodes/start
+
+
+    echo -e "\e[34m████████████████████████████████████████████████████████████\e[0m"
+    # P2 -- VXLAN static and dynamic
     
   SHELL
 
