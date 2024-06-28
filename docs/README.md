@@ -40,9 +40,3 @@ The project aims to showcase a deep understanding of networking concepts through
 - BGP is configured to carry reachability information for various protocols, including IPv4, IPv6, and EVPN, demonstrating a comprehensive understanding of BGP's capabilities.
 
 [![](p3.topology.gif)](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/tree/main/P3)
-
-
-## File Organization
-
-All configuration files are structured within folders located at the root of this repository. Mandatory parts of the project are segregated into folders named p1, p2, and p3, facilitating easy access and navigation for collaborators and recruiters.
-
