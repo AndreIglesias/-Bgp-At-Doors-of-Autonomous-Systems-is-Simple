@@ -107,6 +107,10 @@ brctl addif br0 eth1             # Connect physical device to the bridge
 
 ### Static VXLAN Configuration
 
+Static VXLAN configuration is a method where each VTEP is manually configured with the IP address of the remote VTEP. This approach establishes a direct peer-to-peer connection between VTEPs, ensuring that VXLAN packets are sent directly to the specified remote VTEP.
+
+**Comparison with Dynamic/Multicast Configuration:** Static VXLAN configuration is simpler and more straightforward for small, stable networks where VTEP addresses do not change frequently. However, it can become cumbersome to manage as the network grows or when VTEP addresses change, requiring manual reconfiguration.
+
 #### Router-1 (VTEP)
 ```bash
 ip link add name vxlan10 type vxlan id 10 remote 20.1.1.2 dstport 4789 dev eth0
@@ -129,12 +133,16 @@ ip link set eth1 master br0
 
 ### Dynamic/Multicast VXLAN Configuration
 
+Dynamic or multicast VXLAN configuration uses multicast groups to dynamically discover and communicate with VTEPs. In this setup, VTEPs join a multicast group and send packets to the multicast address. All VTEPs in the group receive the packets, which helps in scenarios with multiple VTEPs without the need for manual configuration of each remote VTEP.
+
 The goal of multicast is to send packets to all devices in the network. A multicast group is a group of devices that listen to a specific IP address. When a device sends a packet to the multicast IP address, all devices in the multicast group receive the packet.
 
 To improve performance and limit the number of multicasts on the network, each VTEP creates a table of correspondences between MAC addresses and VTEP IP addresses. This table can be displayed with:
 ```bash
 bridge fdb show dev vxlan10
 ```
+
+**Comparison with Static VXLAN Configuration:** Dynamic/multicast VXLAN configuration is more scalable and flexible, making it suitable for larger, dynamic networks where VTEPs might be added or removed frequently. It reduces the administrative overhead of manually updating VTEP addresses but can introduce complexity in managing multicast groups and ensuring proper network performance.
 
 #### Router-1 (VTEP)
 ```bash
@@ -155,7 +163,3 @@ ip link set vxlan10 up
 ip link set vxlan10 master br0
 ip link set eth1 master br0
 ```
-
-## Conclusion
-
-In this guide, you have learned how to create a basic VXLAN between two computers using both static and dynamic configurations. Additionally, you have learned how to assign IP addresses to network elements and create a bridge to connect the VXLAN to the physical network device. With this knowledge, you should be able to configure a VXLAN in your own network environment.
