@@ -129,6 +129,8 @@ brctl addif br0 vxlan10          # Connect VXLAN to the bridge
 brctl addif br0 eth1             # Connect physical device to the bridge
 ```
 
+In this setup, the bridge `(br0)` serves as a crucial element by linking the virtual network created by VXLAN `(vxlan10)` with the physical network interface `(eth1)`. This allows seamless communication between devices on the virtual network and those on the physical network, ensuring that data can flow smoothly across different network segments. By forwarding traffic based on MAC addresses, the bridge integrates these segments into a cohesive network environment.
+
 ### Static VXLAN Configuration
 
 Static VXLAN configuration is a method where each VTEP is manually configured with the IP address of the remote VTEP. This approach establishes a direct peer-to-peer connection between VTEPs, ensuring that VXLAN packets are sent directly to the specified remote VTEP.
