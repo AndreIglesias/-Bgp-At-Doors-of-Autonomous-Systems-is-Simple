@@ -203,3 +203,10 @@ ip link set eth1 master br0
 ```
 
 </details>
+
+### Connection tests
+
+From the terminal of any router, we can capture the comunication (`ping`) between the hosts this way.
+```bash
+tshark -i vxlan10 'icmp' # 'icmp && !icmp6'
+```

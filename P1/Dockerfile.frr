@@ -4,6 +4,8 @@ FROM quay.io/frrouting/frr:9.1.0
 # https://quay.io/repository/frrouting/frr
 # https://github.com/FRRouting/frr
 
+RUN apk add --no-cache tshark
+
 ENV DAEMONS="zebra bgpd ospfd isisd"
 
 # The watchfrr, zebra and staticd daemons are always started.
