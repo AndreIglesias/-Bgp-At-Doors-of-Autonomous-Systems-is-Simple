@@ -83,30 +83,33 @@ ip address add 30.1.1.2/24 dev eth0
 
 #### Peer-to-Peer Configuration
 
-For a peer-to-peer configuration, specify the IP address of the other VTEP:
-```bash
-ip link add name <name> type vxlan id <vni> remote <destination_ip> dstport <destination_port> dev <device>
-```
+  For a peer-to-peer configuration, specify the IP address of the other VTEP:
+  ```bash
+  ip link add name <name> type vxlan id <vni> remote <destination_ip> dstport <destination_port> dev <device>
+  ```
 
 #### Multicast Configuration
 
-For a multicast configuration, specify the multicast IP address:
-```bash
-ip link add name <name> type vxlan id <vni> group <multicast_ip> dstport <destination_port> dev <device>
-```
+  For a multicast configuration, specify the multicast IP address:
+  ```bash
+  ip link add name <name> type vxlan id <vni> group <multicast_ip> dstport <destination_port> dev <device>
+  ```
 
-#### Explanation of Command Parameters
+  <details open>
+  <summary> <b> Command Parameters breakdown </b> </summary>
 
-- `ip`: Command to manage the network device
-- `link`: Subcommand to manage the network device
-- `id <ID>`: Specifies the VXLAN Network Identifier (VNI)
-- `local <IPADDR>`: (Optional) Source IP address for outgoing packets
-- `remote <IPADDR>`: Remote VXLAN tunnel endpoint IP address for outgoing packets
-- `group <IPADDR>`: Multicast IP address to join (cannot be specified with `remote` and is required for multicast)
-- `dstport <PORT>`: UDP destination port (standard for VXLAN is 4789)
-- `dev <NAME>`: Physical device for tunnel endpoint communication
-- `-4`: (Optional) Specifies IPv4
-- `ttl <TTL>`: (Optional) Time to Live for outgoing packets
+  - `ip`: Command to manage the network device
+  - `link`: Subcommand to manage the network device
+  - `id <ID>`: Specifies the VXLAN Network Identifier (VNI)
+  - `local <IPADDR>`: (Optional) Source IP address for outgoing packets
+  - `remote <IPADDR>`: Remote VXLAN tunnel endpoint IP address for outgoing packets
+  - `group <IPADDR>`: Multicast IP address to join (cannot be specified with `remote` and is required for multicast)
+  - `dstport <PORT>`: UDP destination port (standard for VXLAN is 4789)
+  - `dev <NAME>`: Physical device for tunnel endpoint communication
+  - `-4`: (Optional) Specifies IPv4
+  - `ttl <TTL>`: (Optional) Time to Live for outgoing packets
+
+  </details>
 
 ### Bridge Configuration
 
@@ -132,6 +135,9 @@ Static VXLAN configuration is a method where each VTEP is manually configured wi
 
 **Comparison with Dynamic/Multicast Configuration:** Static VXLAN configuration is simpler and more straightforward for small, stable networks where VTEP addresses do not change frequently. However, it can become cumbersome to manage as the network grows or when VTEP addresses change, requiring manual reconfiguration.
 
+<details>
+<summary> <b> VTEP config </b> </summary>
+
 #### Router-1 (VTEP)
 ```bash
 ip link add name vxlan10 type vxlan id 10 remote 20.1.1.2 dstport 4789 dev eth0
@@ -152,6 +158,8 @@ ip link set vxlan10 master br0
 ip link set eth1 master br0
 ```
 
+</details>
+
 ### Dynamic/Multicast VXLAN Configuration
 
 Dynamic or multicast VXLAN configuration uses multicast groups to dynamically discover and communicate with VTEPs. In this setup, VTEPs join a multicast group and send packets to the multicast address. All VTEPs in the group receive the packets, which helps in scenarios with multiple VTEPs without the need for manual configuration of each remote VTEP.
@@ -164,6 +172,9 @@ bridge fdb show dev vxlan10
 ```
 
 **Comparison with Static VXLAN Configuration:** Dynamic/multicast VXLAN configuration is more scalable and flexible, making it suitable for larger, dynamic networks where VTEPs might be added or removed frequently. It reduces the administrative overhead of manually updating VTEP addresses but can introduce complexity in managing multicast groups and ensuring proper network performance.
+
+<details>
+<summary> <b> VTEP config </b> </summary>
 
 #### Router-1 (VTEP)
 ```bash
@@ -184,3 +195,5 @@ ip link set vxlan10 up
 ip link set vxlan10 master br0
 ip link set eth1 master br0
 ```
+
+</details>
