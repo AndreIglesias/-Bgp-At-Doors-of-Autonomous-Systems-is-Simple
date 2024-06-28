@@ -41,7 +41,7 @@ BGP-EVPN (Border Gateway Protocol - Ethernet VPN) is a network virtualization te
 
 The network topology for this project is as follows:
 
-![Network topology](../docs/p3.topology.png)
+![Network topology](../docs/p3.topology.gif)
 
 In this third part of the project, we will implement a "spine-and-leaf" architecture, a popular network topology for data centers. Here's how it will be structured:
 
