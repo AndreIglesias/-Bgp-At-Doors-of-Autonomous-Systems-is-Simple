@@ -1,6 +1,11 @@
 # P2 Discovering a VXLAN
 
+![Network layers](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/f6639abb-2a36-419a-b52b-a4a78b1499da)
+
 ## VLAN vs VXLAN
+
+![CLAN vs VXLAN](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/85fed7e6-95dd-48c9-9f7c-bd0da45876c7)
+
 
 | Feature             | VLAN (Virtual Local Area Network)                          | VXLAN (Virtual Extensible Local Area Network)               |
 |---------------------|------------------------------------------------------------|-------------------------------------------------------------|
