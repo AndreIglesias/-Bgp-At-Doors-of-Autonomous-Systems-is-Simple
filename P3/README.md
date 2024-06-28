@@ -64,12 +64,6 @@ An example of a spine-and-leaf architecture is shown below:
 
 ## Setup
 
-### Create the Network Structure (Router, Host, and Link)
-
-The current network diagram is as follows:
-
-![Network diagram](./network-diagram.png)
-
 ### Router-1 (Route Reflector)
 
 The route reflector uses the BGP-EVPN protocol to efficiently share information (MAC mapping table / IP VTEPs) between the different VTEPs.
