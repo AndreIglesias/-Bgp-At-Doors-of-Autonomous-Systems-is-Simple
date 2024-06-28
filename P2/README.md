@@ -1,10 +1,27 @@
 # P2 Discovering a VXLAN
 
+## VLAN vs VXLAN
+
+| Feature             | VLAN (Virtual Local Area Network)                          | VXLAN (Virtual Extensible Local Area Network)               |
+|---------------------|------------------------------------------------------------|-------------------------------------------------------------|
+| **Layer**           | Layer 2                                                    | Layer 2 over Layer 3                                        |
+| **Encapsulation**   | 802.1Q tagging                                             | MAC-in-UDP encapsulation                                    |
+| **ID Space**        | 12-bit VLAN ID (up to 4096 VLANs)                          | 24-bit VXLAN Network Identifier (up to 16 million VXLANs)   |
+| **Scalability**     | Limited to 4096 VLANs per network                          | Scalable to 16 million VXLANs                               |
+| **Broadcast Domain**| Limited to a single Layer 2 network segment                | Spans multiple Layer 3 network segments                     |
+| **Deployment**      | Typically within a single data center                      | Can be deployed across multiple data centers                |
+| **Use Case**        | Small to medium-sized networks                             | Large, complex, and multi-tenant networks                   |
+| **Configuration**   | Relatively simple                                          | Requires more complex configuration                         |
+| **Overhead**        | Minimal additional overhead                                | Additional overhead due to encapsulation                    |
+| **Flexibility**     | Less flexible, bound by physical topology                  | More flexible, allows virtual networks over physical networks|
+| **Isolation**       | Provides isolation at Layer 2                              | Provides isolation at both Layer 2 and Layer 3              |
+
 ## Glossary
 
 | Term                | Definition |
 |---------------------|------------|
-| **VXLAN**           | Virtual Extensible LAN, a network virtualization technology that enables the creation of Layer 2 networks over Layer 4 networks. VXLAN uses a UDP-based encapsulation mechanism to encapsulate Layer 2 frames within Layer 4 packets, allowing for the creation of virtual Layer 2 networks over a Layer 3 network infrastructure. |
+| **VLAN**            | Virtual Local Area Network, a method of segmenting a single physical network into multiple logical networks at the data link layer (Layer 2). VLANs improve network efficiency, security, and management by isolating traffic between different segments while appearing as separate networks despite sharing the same physical infrastructure. |
+| **VXLAN**           | Virtual Extensible LAN, a technology that extends Layer 2 networks over Layer 3 networks using UDP encapsulation. VXLAN enables the creation of virtualized network segments that are scalable across large, multi-tenant data center environments.  |
 | **VTEP**            | Virtual Tunnel Endpoint, a logical entity that acts as a termination point for VXLAN tunnels. VTEPs are responsible for encapsulating and decapsulating VXLAN packets and forwarding them to the appropriate destination. |
 | **Peer-to-peer**    | A type of VXLAN configuration where each VTEP is configured to send traffic directly to the other VTEP. In this configuration, the VTEPs are configured with the IP address of the other VTEP as the destination for all VXLAN traffic. |
 | **Multicast**       | A type of VXLAN configuration where VTEPs use a multicast address to communicate with each other. In this configuration, VTEPs send multicast messages to all other VTEPs present on the multicast group when they receive a packet with an unknown destination MAC address. |
