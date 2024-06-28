@@ -171,6 +171,8 @@ The goal of multicast is to send packets to all devices in the network. A multic
 To improve performance and limit the number of multicasts on the network, each VTEP creates a table of correspondences between MAC addresses and VTEP IP addresses. This table can be displayed with:
 ```bash
 bridge fdb show dev vxlan10
+# Or watch the changes
+watch bridge fdb show dev vxlan10
 ```
 
 **Comparison with Static VXLAN Configuration:** Dynamic/multicast VXLAN configuration is more scalable and flexible, making it suitable for larger, dynamic networks where VTEPs might be added or removed frequently. It reduces the administrative overhead of manually updating VTEP addresses but can introduce complexity in managing multicast groups and ensuring proper network performance.
