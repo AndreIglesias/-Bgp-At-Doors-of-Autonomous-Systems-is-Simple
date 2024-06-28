@@ -32,10 +32,15 @@ The project aims to showcase a deep understanding of networking concepts through
 - VXLAN (Virtual Extensible LAN) technology is explored to establish virtualized Ethernet extensions over existing Layer 3 infrastructure.
 - VXLAN is implemented within the GNS3 environment to simulate complex network topologies and study its impact on network scalability and flexibility.
 
+[![](p2.topology.png)](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/tree/main/P2)
+
 ### BGP with EVPN Implementation
 
 - BGP (Border Gateway Protocol) with EVPN (Ethernet Virtual Private Network) extensions is deployed for efficient routing and MAC address distribution.
 - BGP is configured to carry reachability information for various protocols, including IPv4, IPv6, and EVPN, demonstrating a comprehensive understanding of BGP's capabilities.
+
+[![](p3.topology.gif)](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/tree/main/P3)
+
 
 ## File Organization
 
