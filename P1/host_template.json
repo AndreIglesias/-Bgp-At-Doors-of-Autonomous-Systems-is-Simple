@@ -14,7 +14,7 @@
   "extra_hosts": "",
   "image": "p1-alpine:latest",
   "name": "host_ciglesia",
-  "start_command": "sh'",
+  "start_command": "sh",
   "symbol": ":/symbols/docker_guest.svg",
   "template_id": "123a4567-e89b-12d3-a456-000000000000",
   "template_type": "docker",
