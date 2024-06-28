@@ -4,9 +4,6 @@
 
 ## VLAN vs VXLAN
 
-![CLAN vs VXLAN](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/85fed7e6-95dd-48c9-9f7c-bd0da45876c7)
-
-
 | Feature             | VLAN (Virtual Local Area Network)                          | VXLAN (Virtual Extensible Local Area Network)               |
 |---------------------|------------------------------------------------------------|-------------------------------------------------------------|
 | **Layer**           | Layer 2                                                    | Layer 2 over Layer 3                                        |
@@ -20,6 +17,8 @@
 | **Overhead**        | Minimal additional overhead                                | Additional overhead due to encapsulation                    |
 | **Flexibility**     | Less flexible, bound by physical topology                  | More flexible, allows virtual networks over physical networks|
 | **Isolation**       | Provides isolation at Layer 2                              | Provides isolation at both Layer 2 and Layer 3              |
+
+![CLAN vs VXLAN](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/85fed7e6-95dd-48c9-9f7c-bd0da45876c7)
 
 ## Glossary
 
