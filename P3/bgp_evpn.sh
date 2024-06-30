@@ -8,42 +8,54 @@ HOST1="host_ciglesia-1"
 HOST2="host_ciglesia-2"
 HOST3="host_ciglesia-3"
 
-# Function to execute vtysh commands
-execute_vtysh() {
+# Function to reset a router
+reset_router() {
     local container=$1
-    shift
-    local cmds="$@"
-    docker exec $container vtysh -c "$cmds"
+    echo "Resetting router $container"
+    docker exec $container bash -c "
+        ip address flush dev eth0;
+        ip address flush dev eth1 2>/dev/null || true;
+        ip address flush dev eth2 2>/dev/null || true;
+        ip link del br0 2>/dev/null || true;
+        ip link del vxlan10 2>/dev/null || true;
+    "
+}
+
+# Function to reset a host
+reset_host() {
+    local container=$1
+    echo "Resetting host $container"
+    docker exec $container ip address flush dev eth0
 }
 
 # Function to configure Router 1
 configure_router1() {
     local container=$1
     echo "Configuring $ROUTER1"
-    execute_vtysh $container \
-        "conf t" \
-        "hostname $ROUTER1" \
-        "no ipv6 forwarding" \
-        "interface eth0" \
-        "ip address 10.1.1.1/30" \
-        "interface eth1" \
-        "ip address 10.1.1.5/30" \
-        "interface eth2" \
-        "ip address 10.1.1.9/30" \
-        "interface lo" \
-        "ip address 1.1.1.1/32" \
-        "router bgp 1" \
-        "neighbor ibgp peer-group" \
-        "neighbor ibgp remote-as 1" \
-        "neighbor ibgp update-source lo" \
-        "bgp listen range 1.1.1.0/29 peer-group ibgp" \
-        "address-family l2vpn evpn" \
-        "neighbor ibgp activate" \
-        "neighbor ibgp route-reflector-client" \
-        "exit-address-family" \
-        "router ospf" \
-        "network 0.0.0.0/0 area 0" \
-        "line vty"
+    docker exec $container vtysh \
+        -c "conf t" \
+        -c "hostname $ROUTER1" \
+        -c "no ipv6 forwarding" \
+        -c "interface eth0" \
+        -c "ip address 10.1.1.1/30" \
+        -c "interface eth1" \
+        -c "ip address 10.1.1.5/30" \
+        -c "interface eth2" \
+        -c "ip address 10.1.1.9/30" \
+        -c "interface lo" \
+        -c "ip address 1.1.1.1/32" \
+        -c "router bgp 1" \
+        -c "neighbor ibgp peer-group" \
+        -c "neighbor ibgp remote-as 1" \
+        -c "neighbor ibgp update-source lo" \
+        -c "bgp listen range 1.1.1.0/29 peer-group ibgp" \
+        -c "address-family l2vpn evpn" \
+        -c "neighbor ibgp activate" \
+        -c "neighbor ibgp route-reflector-client" \
+        -c "exit-address-family" \
+        -c "router ospf" \
+        -c "network 0.0.0.0/0 area 0" \
+        -c "line vty"
 }
 
 # Function to configure Router 2, 3, and 4
@@ -63,24 +75,24 @@ configure_router() {
         brctl addif br0 eth1;
     "
 
-    execute_vtysh $container \
-        "conf t" \
-        "hostname $hostname" \
-        "no ipv6 forwarding" \
-        "interface eth0" \
-        "ip address $eth0_ip" \
-        "ip ospf area 0" \
-        "interface lo" \
-        "ip address $lo_ip" \
-        "ip ospf area 0" \
-        "router bgp 1" \
-        "neighbor 1.1.1.1 remote-as 1" \
-        "neighbor 1.1.1.1 update-source lo" \
-        "address-family l2vpn evpn" \
-        "neighbor 1.1.1.1 activate" \
-        "advertise-all-vni" \
-        "exit-address-family" \
-        "router ospf"
+    docker exec $container vtysh \
+        -c "conf t" \
+        -c "hostname $hostname" \
+        -c "no ipv6 forwarding" \
+        -c "interface eth0" \
+        -c "ip address $eth0_ip" \
+        -c "ip ospf area 0" \
+        -c "interface lo" \
+        -c "ip address $lo_ip" \
+        -c "ip ospf area 0" \
+        -c "router bgp 1" \
+        -c "neighbor 1.1.1.1 remote-as 1" \
+        -c "neighbor 1.1.1.1 update-source lo" \
+        -c "address-family l2vpn evpn" \
+        -c "neighbor 1.1.1.1 activate" \
+        -c "advertise-all-vni" \
+        -c "exit-address-family" \
+        -c "router ospf"
 }
 
 # Function to configure a host
@@ -107,24 +119,31 @@ main() {
         # Apply configuration based on the hostname
         case "$container_hostname" in
             $ROUTER1)
+                reset_router $container
                 configure_router1 $container
                 ;;
             $ROUTER2)
+                reset_router $container
                 configure_router $container $ROUTER2 "10.1.1.2/30" "1.1.1.2/32"
                 ;;
             $ROUTER3)
+                reset_router $container
                 configure_router $container $ROUTER3 "10.1.1.6/30" "1.1.1.3/32"
                 ;;
             $ROUTER4)
+                reset_router $container
                 configure_router $container $ROUTER4 "10.1.1.10/30" "1.1.1.4/32"
                 ;;
             $HOST1)
+                reset_host $container
                 configure_host $container "30.1.1.1/24"
                 ;;
             $HOST2)
+                reset_host $container
                 configure_host $container "30.1.1.2/24"
                 ;;
             $HOST3)
+                reset_host $container
                 configure_host $container "30.1.1.3/24"
                 ;;
             *)

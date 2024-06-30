@@ -58,6 +58,11 @@ Vagrant.configure("2") do |config|
     # P2 -- VXLAN static and dynamic
     sleep 1 # Import the project
     curl -X POST http://localhost:3080/v2/projects/12345678-123a-12a3-1a23-000000000000/import?name=p2 -H "Content-Type: multipart/form-data" -F "file=@/vagrant/P2/p2.gns3project"
+
+    echo -e "\e[34m████████████████████████████████████████████████████████████\e[0m"
+    # P3 -- BGP-EVPN Spine-and-Leaf Architecture
+    sleep 1 # Import the project
+    curl -X POST http://localhost:3080/v2/projects/12345678-123b-12b3-1b23-000000000000/import?name=p3 -H "Content-Type: multipart/form-data" -F "file=@/vagrant/P3/p3.gns3project"
     
   SHELL
 
