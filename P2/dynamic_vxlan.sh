@@ -80,12 +80,12 @@ main() {
             $ROUTER1)
                 echo " - Resetting and Configuring $ROUTER1 -"
                 reset_router $container
-                configure_router $container "20.1.1.1/24" "239.1.1.1"
+                configure_router $container "10.1.1.1/24" "239.1.1.1"
                 ;;
             $ROUTER2)
                 echo " - Resetting and Configuring $ROUTER2 -"
                 reset_router $container
-                configure_router $container "20.1.1.2/24" "239.1.1.1"
+                configure_router $container "10.1.1.2/24" "239.1.1.1"
                 ;;
             $HOST1)
                 echo " - Resetting and Configuring $HOST1 -"

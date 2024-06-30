@@ -63,12 +63,12 @@ ip address add <ip_address>/<mask> dev <interface_name>
 
 #### Router-1 IP Address
 ```bash
-ip address add 20.1.1.1/24 dev eth0
+ip address add 10.1.1.1/24 dev eth0
 ```
 
 #### Router-2 IP Address
 ```bash
-ip address add 20.1.1.2/24 dev eth0
+ip address add 10.1.1.2/24 dev eth0
 ```
 
 #### Host-1 IP Address
@@ -144,7 +144,7 @@ Static VXLAN configuration is a method where each VTEP is manually configured wi
 
 #### Router-1 (VTEP)
 ```bash
-ip link add name vxlan10 type vxlan id 10 remote 20.1.1.2 dstport 4789 dev eth0
+ip link add name vxlan10 type vxlan id 10 remote 10.1.1.2 dstport 4789 dev eth0
 ip link add name br0 type bridge
 ip link set br0 up
 ip link set vxlan10 up
@@ -154,7 +154,7 @@ ip link set eth1 master br0
 
 #### Router-2 (VTEP)
 ```bash
-ip link add name vxlan10 type vxlan id 10 remote 20.1.1.1 dstport 4789 dev eth0
+ip link add name vxlan10 type vxlan id 10 remote 10.1.1.1 dstport 4789 dev eth0
 ip link add name br0 type bridge
 ip link set br0 up
 ip link set vxlan10 up

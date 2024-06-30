@@ -256,19 +256,19 @@ router ospf
 #### Host-1
 
 ```bash
-ip address add 30.1.1.1/24 dev eth0
+ip address add 20.1.1.1/24 dev eth0
 ```
 
 #### Host-2
 
 ```bash
-ip address add 30.1.1.2/24 dev eth0
+ip address add 20.1.1.2/24 dev eth0
 ```
 
 #### Host-3
 
 ```bash
-ip address add 30.1.1.3/24 dev eth0
+ip address add 20.1.1.3/24 dev eth0
 ```
 
 ## Configuration Explanation

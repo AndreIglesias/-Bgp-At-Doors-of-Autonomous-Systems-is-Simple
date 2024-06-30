@@ -136,15 +136,15 @@ main() {
                 ;;
             $HOST1)
                 reset_host $container
-                configure_host $container "30.1.1.1/24"
+                configure_host $container "20.1.1.1/24"
                 ;;
             $HOST2)
                 reset_host $container
-                configure_host $container "30.1.1.2/24"
+                configure_host $container "20.1.1.2/24"
                 ;;
             $HOST3)
                 reset_host $container
-                configure_host $container "30.1.1.3/24"
+                configure_host $container "20.1.1.3/24"
                 ;;
             *)
                 echo " - No configuration needed for $container_hostname -"
