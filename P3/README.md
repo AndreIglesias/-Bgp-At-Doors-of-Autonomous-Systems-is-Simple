@@ -1,4 +1,4 @@
-# P3 BGP with EVPN
+# P3 BGP-EVPN Spine-and-Leaf Architecture
 
 ## BGP-EVPN Protocol Overview
 
@@ -22,7 +22,7 @@ BGP-EVPN (Border Gateway Protocol - Ethernet VPN) is a network virtualization te
 3. **Control Plane**: BGP is used as the control plane protocol to exchange MAC and IP address mappings between VTEPs.
 4. **Data Plane**: VXLAN is used as the data plane protocol to carry encapsulated Layer 2 frames over the Layer 3 network.
 
-### Tables Glossary
+### Glossary
 
 | Term                  | Description                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
@@ -39,11 +39,11 @@ BGP-EVPN (Border Gateway Protocol - Ethernet VPN) is a network virtualization te
 
 ## Network Diagram
 
-The network topology for this project is as follows:
+The network topology for this project:
 
 ![Network topology](../docs/p3.topology.png)
 
-In this third part of the project, we will implement a "spine-and-leaf" architecture, a popular network topology for data centers. Here's how it will be structured:
+This project uses a "spine-and-leaf" architecture, popular in data centers for its efficiency and scalability.
 
 - **One main router** acting as a route reflector (spine): This central router will manage and distribute routing information to all connected leaf routers.
 - **Three sub-routers** acting as leafs (VTEPs): These leaf routers will connect to the spine and each other, forming the edges of the network where hosts connect.
@@ -56,9 +56,7 @@ In this third part of the project, we will implement a "spine-and-leaf" architec
 3. **Redundancy**: Multiple spines can provide failover and load balancing, enhancing network reliability.
 4. **Low Latency**: Any leaf can communicate with any other leaf with just one hop through the spine, ensuring minimal latency.
 
-This architecture supports efficient and scalable network designs, suitable for environments where high performance and reliability are crucial.
-
-An example of a spine-and-leaf architecture is shown below:
+Example of a spine-and-leaf architecture:
 
 ![spine-and-leaf architecture](../docs/p3.spine-and-leaf.png)
 
@@ -66,7 +64,7 @@ An example of a spine-and-leaf architecture is shown below:
 
 ### Router-1 (Route Reflector)
 
-The route reflector uses the BGP-EVPN protocol to efficiently share information (MAC mapping table / IP VTEPs) between the different VTEPs.
+The route reflector uses the BGP-EVPN protocol to efficiently share information (MAC mapping table / IP VTEPs) between the VTEPs.
 
 #### Configuration Steps:
 
@@ -124,7 +122,7 @@ line vty
 3. **Disable IPv6**: Disable IPv6 forwarding.
 4. **Configure Interfaces**: Assign IP addresses to the interfaces (eth0 and the loopback interface).
 5. **Set Hostname**: Assign a hostname to the router.
-6. **Configure BGP**: Set up BGP within ASN 1, configure the route reflector client settings, and enable EVPN.
+6. **Configure BGP**: Set up BGP within ASN 1, configure the route reflector client, and enable EVPN.
 7. **Configure OSPF**: Enable OSPF for IP routing.
 
 ```bash
@@ -215,7 +213,7 @@ router ospf
 3. **Disable IPv6**: Disable IPv6 forwarding.
 4. **Configure Interfaces**: Assign IP addresses to the interfaces (eth0 and the loopback interface).
 5. **Set Hostname**: Assign a hostname to the router.
-6. **Configure BGP**: Set up BGP within ASN 1, configure the route reflector client settings, and enable EVPN.
+6. **Configure BGP**: Set up BGP within ASN 1, configure the route reflector client, and enable EVPN.
 7. **Configure OSPF**: Enable OSPF for IP routing.
 
 ```bash
@@ -253,25 +251,21 @@ router ospf
 !
 ```
 
-### Host-1
+### Host Configuration
 
-Configure the IP address for Host-1:
+#### Host-1
 
 ```bash
 ip address add 30.1.1.1/24 dev eth0
 ```
 
-### Host-2
-
-Configure the IP address for Host-2:
+#### Host-2
 
 ```bash
 ip address add 30.1.1.2/24 dev eth0
 ```
 
-### Host-3
-
-Configure the IP address for Host-3:
+#### Host-3
 
 ```bash
 ip address add 30.1.1.3/24 dev eth0
@@ -285,7 +279,7 @@ ip address add 30.1.1.3/24 dev eth0
 2. **Interface Configuration**: Configure network interfaces with IP addresses.
 3. **Loopback Interface**: Use the loopback interface for device identification and stability.
 4. **BGP Configuration**: Set up BGP with route reflector and EVPN settings.
-5. **OSPF Configuration**: Enable OSPF to facilitate IP routing within the network.
+5. **OSPF Configuration**: Enable OSPF for IP routing.
 
 ### Sample Configuration Breakdown
 
@@ -340,7 +334,7 @@ router ospf
 ```
 
 <details>
-<summary> <b> Configuration Explanation (Line by Line) </b> </summary>
+<summary><b>Configuration Explanation (Line by Line)</b></summary>
 
 ```bash
 hostname <name> # Assign a hostname to the machine
@@ -355,9 +349,7 @@ interface <interface_name>
 # A loopback interface is used for device identification. Although any interface address can be used to check if the device is online, the loopback address never changes, even if network topology changes.
 interface lo
     ip address <ip_address>/<mask>
-    ip ospf area <area_id> # Add this interface to O
-
-SPF area 0
+    ip ospf area <area_id> # Add this interface to OSPF area 0
 
 # Configure BGP in ASN 1
 router bgp 1
