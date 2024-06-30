@@ -22,6 +22,15 @@ The project aims to showcase a deep understanding of networking concepts through
 - The project is developed within a virtual machine environment, ensuring isolation and portability across different systems.
 - Virtualization technologies are utilized to create a sandboxed environment for network simulation and configuration.
 
+#### Deploy VM and project
+
+From the root of the repository, run:
+```bash
+vagrant up
+```
+
+This will create the VM with VirtualBox, setup the GNS3 server, install docker and import the entire project.
+
 ### Docker Integration with GNS3
 
 - GNS3 is configured to seamlessly integrate with Docker, leveraging containerization for network service deployment.
