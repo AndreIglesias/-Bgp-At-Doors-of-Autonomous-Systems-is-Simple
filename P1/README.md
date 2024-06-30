@@ -16,7 +16,7 @@ FRRouting (FRR) is a free and open-source networking protocol suite that provide
 * Open Shortest Path First Daemon (OSPFD): OSPFD is a daemon that manages OSPF routing. It is responsible for maintaining the OSPF link-state database and calculating the shortest path to each destination.
 * IS-IS Routing Engine Service: The IS-IS routing engine service is responsible for managing IS-IS routing. It maintains the IS-IS link-state database and calculates the shortest path to each destination.
 
-We use the zebra and quagga implementations of FRR in this project. Zebra provides a routing daemon that manages the routing table and communicates with other routing daemons. Quagga is a fork of Zebra that provides additional features and improvements.
+We use the zebra implementations of FRR in this project. Zebra provides a routing daemon that manages the routing table and communicates with other routing daemons.
 
 ## Using zebra, bgpd, ospfd, and isisd
 
@@ -50,7 +50,7 @@ This is the router:
 
 ## Conclusion
 
-In this project, we configured GNS3 with Docker to manage packet routing using FRRouting (zebra or quagga). Using BGPD, OSPFD, and IS-IS routing engine services to manage routing and provide a minimal environment using Busybox or an equivalent.
+In this project, we configured GNS3 with Docker to manage packet routing using FRRouting (zebra). Using BGPD, OSPFD, and IS-IS routing engine services to manage routing and provide a minimal environment using Busybox or an equivalent.
 
 ## Glossary
 
