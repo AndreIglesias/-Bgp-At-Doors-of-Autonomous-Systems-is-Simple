@@ -31,6 +31,10 @@ vagrant up
 
 This will create the VM with VirtualBox, setup the GNS3 server, install docker and import the entire project.
 
+#### Open the GNS3 Client
+
+After deploying the project, to open the GNS3 client, you have to go to `http://localhost:3081/`.
+
 ### Docker Integration with GNS3
 
 - GNS3 is configured to seamlessly integrate with Docker, leveraging containerization for network service deployment.
