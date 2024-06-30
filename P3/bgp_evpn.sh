@@ -58,13 +58,8 @@ configure_router1() {
         -c "line vty"
 }
 
-# Function to configure Router 2, 3, and 4
-configure_router() {
+router_vxlan() {
     local container=$1
-    local hostname=$2
-    local eth0_ip=$3
-    local lo_ip=$4
-    echo "Configuring $hostname"
 
     docker exec $container bash -c "
         ip link add br0 type bridge;
@@ -74,6 +69,15 @@ configure_router() {
         brctl addif br0 vxlan10;
         brctl addif br0 eth1;
     "
+}
+
+# Function to configure Router 2, 3, and 4
+configure_router() {
+    local container=$1
+    local hostname=$2
+    local eth0_ip=$3
+    local lo_ip=$4
+    echo "Configuring $hostname"
 
     docker exec $container vtysh \
         -c "conf t" \
@@ -118,20 +122,27 @@ main() {
 
         # Apply configuration based on the hostname
         case "$container_hostname" in
+            # Route Reflector
             $ROUTER1)
                 reset_router $container
                 configure_router1 $container
                 ;;
+            # Leaf 1
             $ROUTER2)
                 reset_router $container
+                router_vxlan $container
                 configure_router $container $ROUTER2 "10.1.1.2/30" "1.1.1.2/32"
                 ;;
+            # Leaf 2
             $ROUTER3)
                 reset_router $container
+                # Not added to the vxlan for demonstration purposes
                 configure_router $container $ROUTER3 "10.1.1.6/30" "1.1.1.3/32"
                 ;;
+            # Leaf 3
             $ROUTER4)
                 reset_router $container
+                router_vxlan $container
                 configure_router $container $ROUTER4 "10.1.1.10/30" "1.1.1.4/32"
                 ;;
             $HOST1)
