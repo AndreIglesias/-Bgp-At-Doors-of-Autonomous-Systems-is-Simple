@@ -115,14 +115,15 @@ The current network diagram is as follows:
     ```bash
     ip address add 30.1.1.2/24 dev eth0
     ```
-    > [!IMPORTANT]
-    > The IP assignation is the only configuration needed for the hosts.
 
 </details>
 
+> [!IMPORTANT]
+> The IP assignation is the only configuration needed for the hosts.
+
 ### VXLAN Configuration
 
-This configurations are for the routers only.
+The VXLAN configurations are for the routers only.
 
 #### Peer-to-Peer Configuration
 
