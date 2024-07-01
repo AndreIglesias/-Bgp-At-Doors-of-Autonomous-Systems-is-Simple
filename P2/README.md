@@ -89,36 +89,44 @@ The current network diagram is as follows:
 
 ### IP Address Configuration
 
-To enable communication between the various network elements, assign valid IP addresses using the following command:
-```bash
-ip address add <ip_address>/<mask> dev <interface_name>
-```
+<details open>
+<summary>To enable communication between the various network elements, assign valid IP addresses.</summary>
 
-#### Router-1 IP Address
-```bash
-ip address add 10.1.1.1/24 dev eth0
-```
+- ##### IP Assignation Command
+    ```bash
+    ip address add <ip_address>/<mask> dev <interface_name>
+    ```
 
-#### Router-2 IP Address
-```bash
-ip address add 10.1.1.2/24 dev eth0
-```
+    ##### Router-1
+    ```bash
+    ip address add 10.1.1.1/24 dev eth0
+    ```
 
-#### Host-1 IP Address
-```bash
-ip address add 30.1.1.1/24 dev eth0
-```
+    ##### Router-2
+    ```bash
+    ip address add 10.1.1.2/24 dev eth0
+    ```
+    ##### Host-1
+    ```bash
+    ip address add 30.1.1.1/24 dev eth0
+    ```
 
-#### Host-2 IP Address
-```bash
-ip address add 30.1.1.2/24 dev eth0
-```
+    ##### Host-2
+    ```bash
+    ip address add 30.1.1.2/24 dev eth0
+    ```
+    > [!IMPORTANT]
+    > The IP assignation is the only configuration needed for the hosts.
+
+</details>
 
 ### VXLAN Configuration
 
+This configurations are for the routers only.
+
 #### Peer-to-Peer Configuration
 
-  For a peer-to-peer configuration, specify the IP address of the other VTEP:
+  For a peer-to-peer configuration, specify the IP address of the other VTEP in each VTEP:
   ```bash
   ip link add name <name> type vxlan id <vni> remote <destination_ip> dstport <destination_port> dev <device>
   ```
@@ -148,7 +156,10 @@ ip address add 30.1.1.2/24 dev eth0
 
 ### Bridge Configuration
 
-To connect the VXLAN to the physical network device, create a bridge:
+A bridge connects the VXLAN (`vxlan10`) to the physical network device / ethernet interface (`eth1`).
+
+![VXLAN bridge](../docs/p2.bridge.png)
+
 ```bash
 ip link add name br0 type bridge  # Create the bridge
 ip link set br0 up                # Start the bridge
@@ -157,14 +168,34 @@ ip link set vxlan10 master br0    # Connect VXLAN to the bridge
 ip link set eth1 master br0       # Connect physical device to the bridge
 ```
 
-Alternatively, use the `brctl` command:
+<details>
+<summary><b><i>brctl</i> alternative commands</b></summary>
+
+, use the `brctl` command:
 ```bash
 brctl addbr br0                  # Create the bridge
 brctl addif br0 vxlan10          # Connect VXLAN to the bridge
 brctl addif br0 eth1             # Connect physical device to the bridge
 ```
+</details>
 
-In this setup, the bridge `(br0)` serves as a crucial element by linking the virtual network created by VXLAN `(vxlan10)` with the physical network interface `(eth1)`. This allows seamless communication between devices on the virtual network and those on the physical network, ensuring that data can flow smoothly across different network segments. By forwarding traffic based on MAC addresses, the bridge integrates these segments into a cohesive network environment.
+#### Role of the bridge (`br0`)
+
+- **Layer 2 Connectivity:**
+
+    - The bridge (br0) operates at Layer 2 (Data Link Layer) of the OSI model, forwarding Ethernet frames between its connected interfaces based on MAC addresses.
+
+- **Integration of VXLAN and Physical Network:**
+
+    - By connecting both vxlan10 and eth1 to the bridge br0, devices on the VXLAN segment can communicate with devices on the local physical network as if they were on the same local network segment.
+
+- **MAC Address Learning and Forwarding:**
+
+    - The bridge learns the MAC addresses of devices connected to its interfaces and maintains a forwarding table. This allows it to efficiently forward frames only to the destination interface, reducing unnecessary traffic.
+
+- **Seamless Network Extension:**
+
+    - The bridge enables seamless extension of the local network into the VXLAN segment. For example, a device connected to eth1 can send traffic to a device on the VXLAN network via `vxlan10`, and vice versa, without needing additional routing configurations.
 
 ### Static VXLAN Configuration
 
@@ -243,6 +274,8 @@ From the terminal of any router, we can capture the comunication (`ping`) betwee
 ```bash
 tshark -i vxlan10 'icmp' # 'icmp && !icmp6'
 ```
+
+---
 
 ## Glossary
 

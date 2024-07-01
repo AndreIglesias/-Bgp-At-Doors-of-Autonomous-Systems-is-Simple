@@ -52,6 +52,8 @@ This is the router's console, we can see that our daemons are running.
 ![Router](../docs/p1.router.png)
 
 
+---
+
 ## Glossary
 
 | Term                 | Definition                                                                                               |
