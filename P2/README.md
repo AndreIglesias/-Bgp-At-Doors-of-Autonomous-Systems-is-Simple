@@ -4,6 +4,8 @@
 
 **VXLAN** (Virtual Extensible LAN) is a network virtualization technology that addresses the scalability limitations of traditional VLANs (Virtual LANs).
 
+![VLAN](../docs/p2.vlan.png)
+
 ### How VXLAN Works
 
 #### VXLAN Tunnel Endpoints (VTEPs)
