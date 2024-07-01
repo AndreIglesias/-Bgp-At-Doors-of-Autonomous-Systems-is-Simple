@@ -78,7 +78,8 @@ VXLAN relies on **VXLAN Tunnel Endpoints** (VTEPs) for encapsulating and decapsu
 
 This guide walks you through the process of creating a basic VXLAN between two computers. VXLAN can be configured either statically using a peer-to-peer connection or dynamically using a multicast address.
 
-The commands must be ran inside their respective devices.
+> [!IMPORTANT]
+> The commands must be ran inside their respective devices (Router and host containers).
 
 ### Network Diagram
 
