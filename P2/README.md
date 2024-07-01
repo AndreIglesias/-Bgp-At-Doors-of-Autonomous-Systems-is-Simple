@@ -1,6 +1,56 @@
 # P2 Discovering a VXLAN
 
-![Network layers](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/f6639abb-2a36-419a-b52b-a4a78b1499da)
+## VXLAN
+
+**VXLAN** (Virtual Extensible LAN) is a network virtualization technology that addresses the scalability limitations of traditional VLANs (Virtual LANs).
+
+### How VXLAN Works
+
+#### VXLAN Tunnel Endpoints (VTEPs)
+
+VXLAN relies on **VXLAN Tunnel Endpoints** (VTEPs) for encapsulating and decapsulating Ethernet frames within UDP packets. 
+
+**VTEPs** are responsible for the following:
+
+- **Encapsulation:** When a VTEP receives a Layer 2 Ethernet frame destined for a VXLAN network, it encapsulates the frame into a VXLAN packet. This encapsulation process involves adding a VXLAN header (which includes the VNI) and a UDP header.
+
+- **Decapsulation:** Upon receiving a VXLAN packet, the destination VTEP decapsulates the VXLAN packet to retrieve the original Layer 2 Ethernet frame and forwards it to the destination within the VXLAN segment.
+
+#### Static (Peer-to-Peer) VXLAN Configuration
+
+- **Point-to-Point Tunnels**: VXLAN tunnels are statically configured between specific VTEPs. Each VTEP is aware of the IP addresses of its peer VTEPs.
+
+> [!NOTE]
+> #### Configuration Example
+> - VTEP A and VTEP B are configured with each other's IP addresses to establish a point-to-point VXLAN tunnel.
+> - When VTEP A needs to communicate with a host on VTEP B's network, it encapsulates the Ethernet frame into a VXLAN packet with the destination VTEP B's VTEP IP address.
+> - VTEP B receives the VXLAN packet, decapsulates it to retrieve the original Ethernet frame, and forwards it to the destination host.
+
+
+#### Dynamic Multicast VXLAN Configuration
+
+- **Multicast Group Address:** VXLAN uses multicast for efficient broadcast, unknown unicast, and multicast (BUM) traffic handling. Each VXLAN segment is associated with a multicast group address.
+
+  <details>
+  <summary><b>BUM</b></summary>
+
+    | **Traffic Type**       | **General Networking**                                                                                                                                                     | **VXLAN Context**                                                                                                                                                           |
+    |------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | **Broadcast**          | Broadcast traffic is sent by a source to all devices within the same broadcast domain. Includes operations like ARP (Address Resolution Protocol) requests.              | In VXLAN, broadcast traffic is encapsulated into VXLAN packets and forwarded across the VXLAN network. Each VXLAN Tunnel Endpoint (VTEP) replicates the broadcast packet. |
+    | **Unknown Unicast**    | Unknown unicast traffic is destined for a specific MAC address that the switch or router has not yet learned. The switch floods the frame to all ports in the VLAN.       | VXLAN treats unknown unicast traffic similarly to broadcast traffic by encapsulating it into VXLAN packets and forwarding them to all VTEPs in the VXLAN segment.          |
+    | **Multicast**          | Multicast traffic is sent from one source to multiple recipients who have expressed interest in receiving the traffic. Uses multicast group addresses.                  | VXLAN uses IP multicast to efficiently handle multicast traffic within VXLAN segments, associating each segment with a multicast group address.                         |
+
+  </details>
+
+- **Dynamic Learning:** VTEPs dynamically learn the mappings of VXLAN segments to multicast group addresses.
+
+> [!NOTE]
+> #### Configuration Example
+> - VTEPs dynamically join a multicast group associated with a VXLAN segment when they need to forward BUM traffic (such as broadcast or multicast traffic) within that segment.
+> - When a VTEP receives BUM traffic from a locally connected host, it encapsulates the traffic into a VXLAN packet and sends it to the multicast group address associated with the destination VXLAN segment.
+> - Other VTEPs that are part of the same VXLAN segment and have joined the multicast group receive the VXLAN packet, decapsulate it, and forward the traffic to the appropriate hosts within their segment.
+
+
 
 ## VLAN vs VXLAN
 
@@ -19,28 +69,6 @@
 | **Isolation**       | Provides isolation at Layer 2                              | Provides isolation at both Layer 2 and Layer 3              |
 
 ![CLAN vs VXLAN](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/85fed7e6-95dd-48c9-9f7c-bd0da45876c7)
-
-## Glossary
-
-| Term                | Definition |
-|---------------------|------------|
-| **VLAN**            | Virtual Local Area Network, a method of segmenting a single physical network into multiple logical networks at the data link layer (Layer 2). VLANs improve network efficiency, security, and management by isolating traffic between different segments while appearing as separate networks despite sharing the same physical infrastructure. |
-| **VXLAN**           | Virtual Extensible LAN, a technology that extends Layer 2 networks over Layer 3 networks using UDP encapsulation. VXLAN enables the creation of virtualized network segments that are scalable across large, multi-tenant data center environments.  |
-| **VTEP**            | Virtual Tunnel Endpoint, a logical entity that acts as a termination point for VXLAN tunnels. VTEPs are responsible for encapsulating and decapsulating VXLAN packets and forwarding them to the appropriate destination. |
-| **Peer-to-peer**    | A type of VXLAN configuration where each VTEP is configured to send traffic directly to the other VTEP. In this configuration, the VTEPs are configured with the IP address of the other VTEP as the destination for all VXLAN traffic. |
-| **Multicast**       | A type of VXLAN configuration where VTEPs use a multicast address to communicate with each other. In this configuration, VTEPs send multicast messages to all other VTEPs present on the multicast group when they receive a packet with an unknown destination MAC address. |
-| **Router**          | A networking device that forwards data packets between computer networks. Routers connect two or more networks and route packets based on their IP address. |
-| **Switch**          | A networking device that connects devices together on a computer network by using packet switching to receive, process, and forward data to the destination device. Switches operate at the data link layer (Layer 2) of the OSI model. |
-| **Host**            | A computer or other device connected to a computer network. Hosts can communicate with each other over the network by exchanging data packets. |
-| **Link**            | A communication channel between two devices. In networking, a link refers to the physical or logical connection between two devices. |
-| **IP address**      | A unique identifier assigned to each device on a computer network. IP addresses are used to route data packets between devices on the network. |
-| **Subnet**          | A logical subdivision of an IP network. Subnets are used to divide a larger network into smaller, more manageable segments. |
-| **MAC address**     | A unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment. MAC addresses are used to identify devices on a LAN. |
-| **UDP**             | User Datagram Protocol, a connectionless transport protocol used for sending datagrams over IP networks. UDP is used as the transport protocol for VXLAN encapsulation. |
-| **TTL**             | Time to Live, a value that indicates how long a packet should remain in the network before being discarded. The TTL value is set by the sender of the packet and is decremented by each router that forwards the packet. If the TTL value reaches zero, the packet is discarded. |
-| **BGP**             | Border Gateway Protocol, the protocol used to exchange routing information between autonomous systems on the Internet. BGP makes decisions based on paths, network policies, and rulesets configured by a network administrator. |
-| **Autonomous System (AS)** | A collection of IP networks and routers under the control of a single organization that presents a common routing policy to the Internet. |
-| **Border Gateway**  | The gateway that connects an autonomous system with other autonomous systems. It uses BGP to exchange routing information with the border gateways of other autonomous systems. |
 
 ## VXLAN Configuration Guide
 
@@ -210,3 +238,27 @@ From the terminal of any router, we can capture the comunication (`ping`) betwee
 ```bash
 tshark -i vxlan10 'icmp' # 'icmp && !icmp6'
 ```
+
+## Glossary
+
+![Network layers](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/f6639abb-2a36-419a-b52b-a4a78b1499da)
+
+| Term                | Definition |
+|---------------------|------------|
+| **VLAN**            | Virtual Local Area Network, a method of segmenting a single physical network into multiple logical networks at the data link layer (Layer 2). VLANs improve network efficiency, security, and management by isolating traffic between different segments while appearing as separate networks despite sharing the same physical infrastructure. |
+| **VXLAN**           | Virtual Extensible LAN, a technology that extends Layer 2 networks over Layer 3 networks using UDP encapsulation. VXLAN enables the creation of virtualized network segments that are scalable across large, multi-tenant data center environments.  |
+| **VTEP**            | Virtual Tunnel Endpoint, a logical entity that acts as a termination point for VXLAN tunnels. VTEPs are responsible for encapsulating and decapsulating VXLAN packets and forwarding them to the appropriate destination. |
+| **Peer-to-peer**    | A type of VXLAN configuration where each VTEP is configured to send traffic directly to the other VTEP. In this configuration, the VTEPs are configured with the IP address of the other VTEP as the destination for all VXLAN traffic. |
+| **Multicast**       | A type of VXLAN configuration where VTEPs use a multicast address to communicate with each other. In this configuration, VTEPs send multicast messages to all other VTEPs present on the multicast group when they receive a packet with an unknown destination MAC address. |
+| **Router**          | A networking device that forwards data packets between computer networks. Routers connect two or more networks and route packets based on their IP address. |
+| **Switch**          | A networking device that connects devices together on a computer network by using packet switching to receive, process, and forward data to the destination device. Switches operate at the data link layer (Layer 2) of the OSI model. |
+| **Host**            | A computer or other device connected to a computer network. Hosts can communicate with each other over the network by exchanging data packets. |
+| **Link**            | A communication channel between two devices. In networking, a link refers to the physical or logical connection between two devices. |
+| **IP address**      | A unique identifier assigned to each device on a computer network. IP addresses are used to route data packets between devices on the network. |
+| **Subnet**          | A logical subdivision of an IP network. Subnets are used to divide a larger network into smaller, more manageable segments. |
+| **MAC address**     | A unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment. MAC addresses are used to identify devices on a LAN. |
+| **UDP**             | User Datagram Protocol, a connectionless transport protocol used for sending datagrams over IP networks. UDP is used as the transport protocol for VXLAN encapsulation. |
+| **TTL**             | Time to Live, a value that indicates how long a packet should remain in the network before being discarded. The TTL value is set by the sender of the packet and is decremented by each router that forwards the packet. If the TTL value reaches zero, the packet is discarded. |
+| **BGP**             | Border Gateway Protocol, the protocol used to exchange routing information between autonomous systems on the Internet. BGP makes decisions based on paths, network policies, and rulesets configured by a network administrator. |
+| **Autonomous System (AS)** | A collection of IP networks and routers under the control of a single organization that presents a common routing policy to the Internet. |
+| **Border Gateway**  | The gateway that connects an autonomous system with other autonomous systems. It uses BGP to exchange routing information with the border gateways of other autonomous systems. |

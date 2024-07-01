@@ -1,6 +1,6 @@
 # P1 GNS3 Configuration with Docker
 
-This project involves the configuration of **GNS3** (Network simulator) with Docker to create the hosts and routers using **Alpine Linux** and **FRRouting** (Routing software suite).
+This part involves the configuration of **GNS3** (Network simulator) with Docker to create the hosts and routers using **Alpine Linux** and **FRRouting** (Routing software suite).
 
 ## GNS3
 
