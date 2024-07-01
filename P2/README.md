@@ -2,7 +2,7 @@
 
 ## VXLAN
 
-**VXLAN** (Virtual Extensible LAN) is a network virtualization technology that addresses the scalability limitations of traditional VLANs (Virtual LANs).
+**VXLAN** (Virtual Extensible LAN) is a network virtualization technology that addresses the scalability limitations of traditional **VLANs** (Virtual LANs).
 
 ![VLAN](../docs/p2.vlan.png)
 
@@ -17,6 +17,8 @@ VXLAN relies on **VXLAN Tunnel Endpoints** (VTEPs) for encapsulating and decapsu
 - **Encapsulation:** When a VTEP receives a Layer 2 Ethernet frame destined for a VXLAN network, it encapsulates the frame into a VXLAN packet. This encapsulation process involves adding a VXLAN header (which includes the VNI) and a UDP header.
 
 - **Decapsulation:** Upon receiving a VXLAN packet, the destination VTEP decapsulates the VXLAN packet to retrieve the original Layer 2 Ethernet frame and forwards it to the destination within the VXLAN segment.
+
+![VXLAN Tunnel](../docs/p2.vxlan_tunnel.png)
 
 #### Static (Peer-to-Peer) VXLAN Configuration
 
