@@ -1,56 +1,56 @@
 # P1 GNS3 Configuration with Docker
 
-This project involves the configuration of GNS3 with Docker to manage packet routing using FRRouting (zebra or quagga). The project includes pre-built images that need to be configured with BGPD, OSPFD, and IS-IS routing engine services.
+This project involves the configuration of **GNS3** (Network simulator) with Docker to create the hosts and routers using **Alpine Linux** and **FRRouting** (Routing software suite).
 
 ## GNS3
 
-GNS3 is a graphical network simulator that allows users to design and test complex network topologies. In this project, we use GNS3 to configure and test our Docker images with the required routing services.
+GNS3 is a **graphical network simulator** that allows users to design and test complex network topologies. In this project, we use GNS3 to configure and test our Docker images with the required routing services.
 
-## Docker Images
+## FRRouting
 
-### FRRouting
+FRRouting (FRR) is an **open-source routing software suite** that provides implementations of various network protocols. It is designed to manage and control routing within a network, enabling devices to communicate efficiently and reliably. FRR is widely used in both traditional and software-defined networking environments. FRR is a fork of Quagga, and Quagga is a fork of Zebra.
 
-FRRouting (FRR) is a free and open-source networking protocol suite that provides routing functionality for various IP protocols. It supports a wide range of routing protocols, including BGP, OSPF, RIP, IS-IS, and more. In this project, we use FRR to manage packet routing using the following services:
+In this project, we use FRR to manage packet routing using the following services:
 
-* Border Gateway Protocol Daemon (BGPD): BGPD is a daemon that manages BGP routing. It is responsible for establishing BGP sessions with other routers and exchanging routing information.
-* Open Shortest Path First Daemon (OSPFD): OSPFD is a daemon that manages OSPF routing. It is responsible for maintaining the OSPF link-state database and calculating the shortest path to each destination.
-* IS-IS Routing Engine Service: The IS-IS routing engine service is responsible for managing IS-IS routing. It maintains the IS-IS link-state database and calculates the shortest path to each destination.
+| **Service**                                                                 | **Description**                                                                                                                                                          |
+|-----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Border Gateway Protocol Daemon (**BGPD**)                                   | It is responsible for establishing BGP sessions with other routers and exchanging routing information.                         |
+| Open Shortest Path First Daemon (**OSPFD**)                                 | It is responsible for maintaining the OSPF link-state database and calculating the shortest path to each destination.        |
+| Intermediate System to Intermediate System (**IS-IS**) Routing Engine Service | It maintains the IS-IS link-state database and calculates the shortest path to each destination. |
 
-We use the zebra implementations of FRR in this project. Zebra provides a routing daemon that manages the routing table and communicates with other routing daemons.
+## Docker
 
-## Using zebra, bgpd, ospfd, and isisd
+The following Dockerfile can be used to create an FRR Docker image that runs BGPD, OSPFD, and IS-IS daemons along with BusyBox (Because it uses Alpine Linux as a base image, which uses BusyBox by default), which is required by GNS3:
 
-To configure our Docker images with the required services, we use the following commands:
+```docker
+FROM quay.io/frrouting/frr:9.1.0
 
-* `zebra`: This command starts the Zebra daemon, which manages the routing table and communicates with other routing daemons.
-* `bgpd`: This command starts the BGPD daemon, which manages BGP routing.
-* `ospfd`: This command starts the OSPFD daemon, which manages OSPF routing.
-* `isisd`: This command starts the IS-IS routing engine service, which manages IS-IS routing.
+ENV DAEMONS="zebra bgpd ospfd isisd"
 
-We also use Busybox or an equivalent to provide a minimal environment for running our Docker images.
+# The watchfrr, zebra and staticd daemons are always started.
+RUN sed -i -e "s/bgpd=no/bgpd=yes/g" /etc/frr/daemons && \
+    sed -i -e "s/ospfd=no/ospfd=yes/g" /etc/frr/daemons && \
+    sed -i -e "s/isisd=no/isisd=yes/g" /etc/frr/daemons && \
+    sed -i '/^#frr_profile="traditional"/s/^#//' /etc/frr/daemons && \
+    touch /etc/frr/vtysh.conf
 
-## Project Requirements
+ENTRYPOINT sh -c "/usr/lib/frr/docker-start & exec sh"
+```
 
-* The Docker images must be configured to work in GNS3 with the required services.
-* The name of the machines must include the login name of the user.
-* The configuration files must be included in the project repository with comments explaining the setup of each equipment.
-* The project must be rendered in a P1 folder at the root of the git repository.
-* The project must be exported with a ZIP compression, including the base images.
-* No IP address should be configured by default.
+- **ENV DAEMONS**: Sets the environment variable DAEMONS to specify which daemons should be started (zebra, bgpd, ospfd, and isisd).
+- **RUN Command**: The RUN command modifies the /etc/frr/daemons file to enable the BGP, OSPF, and IS-IS daemons. It also enables the traditional profile and ensures the vtysh.conf file exists.
+- **ENTRYPOINT**: The entry point starts the FRR daemons and then launches a shell. The docker-start script initializes the FRR daemons, and exec sh ensures the container stays running.
 
 ## Project Diagram
 
-The following diagram shows the two Docker images configured in GNS3:
+The following diagram shows the two Docker containers configured in GNS3 as a host and a router:
 
 ![Topology](../docs/p1.gns3.png)
 
-This is the router:
+This is the router's console, we can see that our daemons are running.
 
 ![Router](../docs/p1.router.png)
 
-## Conclusion
-
-In this project, we configured GNS3 with Docker to manage packet routing using FRRouting (zebra). Using BGPD, OSPFD, and IS-IS routing engine services to manage routing and provide a minimal environment using Busybox or an equivalent.
 
 ## Glossary
 
