@@ -74,6 +74,14 @@ VXLAN relies on **VXLAN Tunnel Endpoints** (VTEPs) for encapsulating and decapsu
 
 ![CLAN vs VXLAN](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/85fed7e6-95dd-48c9-9f7c-bd0da45876c7)
 
+### Virtual Network Identifier (VNI)
+
+- **Definition:** VNI is a 24-bit identifier used in VXLAN to uniquely identify each virtual network (or segment) within the VXLAN overlay network. It plays a crucial role in encapsulating Layer 2 Ethernet frames in VXLAN tunnels across Layer 3 networks.
+
+- **Purpose:** VXLAN (Virtual Extensible LAN) is a tunneling technology that allows the extension of Layer 2 segments over an underlying Layer 3 network. Each VXLAN segment, which corresponds to a virtual network, is identified by a VNI. This enables multiple virtual networks to coexist and be logically isolated from each other over the same physical infrastructure.
+
+- **Format:** VNI is a 24-bit value, providing up to 16 million (2^24) unique VXLAN segments. The VNI is carried in the VXLAN header and is used by the VXLAN tunnel endpoints (VTEPs) to identify which virtual network (VXLAN segment) a specific Ethernet frame belongs to.
+
 ## VXLAN Configuration Guide
 
 This guide walks you through the process of creating a basic VXLAN between two computers. VXLAN can be configured either statically using a peer-to-peer connection or dynamically using a multicast address.
@@ -280,7 +288,9 @@ tshark -i vxlan10 'icmp' # 'icmp && !icmp6'
 
 ## Glossary
 
-![Network layers](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/f6639abb-2a36-419a-b52b-a4a78b1499da)
+![OSI Layers](../docs/p2.layers.png)
+
+![Network Layers](https://github.com/AndreIglesias/Bgp-At-Doors-of-Autonomous-Systems-is-Simple/assets/35022933/f6639abb-2a36-419a-b52b-a4a78b1499da)
 
 | Term                | Definition |
 |---------------------|------------|

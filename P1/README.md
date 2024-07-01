@@ -16,7 +16,19 @@ In this project, we use FRR to manage packet routing using the following service
 |-----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Border Gateway Protocol Daemon (**BGPD**)                                   | It is responsible for establishing BGP sessions with other routers and exchanging routing information.                         |
 | Open Shortest Path First Daemon (**OSPFD**)                                 | It is responsible for maintaining the OSPF link-state database and calculating the shortest path to each destination.        |
-| Intermediate System to Intermediate System (**IS-IS**) Routing Engine Service | It maintains the IS-IS link-state database and calculates the shortest path to each destination. |
+| Intermediate System to Intermediate System (**IS-IS**) **Routing Engine Service** | It maintains the IS-IS link-state database and calculates the shortest path to each destination. |
+
+OSPF (Open Shortest Path First) and IS-IS (Intermediate System to Intermediate System) are both link-state routing protocols used in large-scale networks, but they differ in several key aspects despite both using Dijkstra's algorithm for path calculation. 
+
+| Feature                       | OSPF (Open Shortest Path First)                             | IS-IS (Intermediate System to Intermediate System)         |
+|-------------------------------|--------------------------------------------------------------|------------------------------------------------------------|
+| **Protocol Family**           | TCP/IP                                                       | Originally OSI, adapted for TCP/IP                          |
+| **Protocol Data Units (PDUs)**| Link State Advertisements (LSAs)                             | Link State Protocol Data Units (LSPs)                       |
+| **Addressing**                | Uses IP addresses                                            | Uses a simpler System ID (and optionally, IP addresses)     |
+| **Metric Calculation**        | Based on cost (typically bandwidth)                          | Administrative Distance (AD) or Metric based on cost        |
+| **Hierarchical Design**       | Uses Areas to divide the network                             | Uses a flat routing domain                                   |
+| **Typical Applications**      | Enterprise networks, data centers, service provider networks | Large service provider networks                              |
+
 
 ## Docker
 

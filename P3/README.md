@@ -1,8 +1,72 @@
 # P3 BGP-EVPN Spine-and-Leaf Architecture
 
-## BGP-EVPN Protocol Overview
+## BGP
 
-BGP-EVPN (Border Gateway Protocol - Ethernet VPN) is a network virtualization technology that uses BGP as the control plane protocol to distribute MAC addresses and IP address mappings across a network. This allows for efficient and scalable Layer 2 and Layer 3 connectivity across different network segments. 
+Border Gateway Protocol (**BGP**) is a standardized exterior gateway protocol (**EGP**) designed to exchange routing information between different autonomous systems (**ASes**) on the internet.
+
+![BGP](../docs/p3.bgp.png)
+
+- **Exterior Gateway Protocol (EGP):** Protocol to exchange routing information between different Autonomous Systems. It helps ensure data can be routed across the global internet.
+- **Autonomous System (AS):** A large network or group of networks under a single organization's control that presents a unified routing policy to the internet. Each AS is assigned a unique AS number (**ASN**).
+- **BGP Peers/Neighbors:**
+  - BGP routers establish peer relationships with routers in other ASes (external BGP, eBGP) or within the same AS (internal BGP, iBGP).
+  - Peers exchange routing information to propagate route knowledge.
+- **Path Vector Protocol:**
+  - BGP uses a path vector mechanism to maintain the path information that gets updated dynamically as routes change.
+  - Each BGP route advertisement includes the full path of ASes that the route traverses.
+- **Route Advertisement and Selection:**
+  - BGP routers advertise routes to their peers, including various attributes like AS path, next-hop, and multiple others.
+  - BGP uses these attributes to select the best path when multiple routes to the same destination exist.
+- **Policy-Based Routing:** BGP allows for complex routing policies based on multiple attributes, making it highly flexible for network administrators to control route selection and traffic flow.
+
+### Type 2 and 3 Routes
+
+| Feature                  | Type 2 Route                                        | Type 3 Route                                      |
+|--------------------------|-----------------------------------------------------|---------------------------------------------------|
+| **Layer of Connectivity**| Layer 2 (MAC address reachability)                  | Layer 3 (IP address reachability)                 |
+| **Usage**                | Used in Layer 2 VPN services (BGP/MPLS VPN, EVPN)   | Used in general IP routing (Internet, enterprise networks) |
+| **Attributes**           | - MAC address<br>- VNI (in VXLAN deployments)<br>- Other Layer 2 specific parameters | - IP prefix<br>- Subnet mask<br>- Next-hop IP address<br>- AS path<br>- Other BGP attributes for IP routing |
+| **Typical Deployment**   | Data centers, multi-tenant environments             | Internet service providers, enterprise networks   |
+| **Example Scenario**     | - Extending Layer 2 networks across Layer 3 boundaries<br>- Providing VLAN-like services over WAN<br>- Multi-tenant environments | - Advertising IP prefixes to enable end-to-end connectivity<br>- Optimizing paths across AS boundaries          |
+
+### Explanation:
+- **Layer of Connectivity**: Type 2 routes deal with Layer 2 MAC addresses and VXLAN-specific identifiers (VNI), facilitating connectivity at the data link layer. Type 3 routes, on the other hand, focus on IP address reachability, enabling network layer connectivity across diverse networks.
+  
+- **Usage**: Type 2 routes are crucial for VPN services that require virtualized Layer 2 connectivity, such as BGP/MPLS VPNs and Ethernet VPNs (EVPN). Type 3 routes are foundational in Internet routing and enterprise networks for IP address management and routing.
+  
+- **Attributes**: Type 2 routes carry MAC addresses, VNIs in VXLAN, and specific Layer 2 parameters. Type 3 routes include IP prefixes, subnet masks, next-hop addresses, AS paths, and other BGP attributes essential for IP routing decisions.
+
+- **Typical Deployment**: Type 2 routes are commonly deployed in data centers and multi-tenant environments where virtualized Layer 2 networks are needed. Type 3 routes are used extensively by ISPs and large enterprises to manage IP routing across global networks.
+
+- **Example Scenario**: Type 2 routes facilitate extending Layer 2 networks over Layer 3 infrastructure, providing VLAN-like services across WANs and supporting multi-tenancy scenarios. Type 3 routes enable ISPs to advertise IP prefixes for efficient routing across the Internet and within enterprise networks.
+
+## EVPN
+
+EVPN (Ethernet VPN) is a technology designed to address the limitations of traditional VXLAN deployments by providing a scalable and efficient control plane, using MP-BGP (Multiprotocol BGP), for network virtualization overlays.
+
+This allows for automated VXLAN tunnel establishment and efficient exchange of network reachability information, including Layer 2 MAC addresses and Layer 3 routing information.
+
+## BGP-EVPN Protocol
+
+BGP-EVPN (Border Gateway Protocol - Ethernet Virtual Private Network) is an extension to BGP that enhances its functionality to support Layer 2 VPN services over an IP/MPLS (Multiprotocol Label Switching) network. It enables the advertisement of MAC addresses, IP addresses, and other Layer 2 and Layer 3 reachability information using BGP.
+
+### Relationship with VXLAN and BGP:
+
+- **VXLAN:** VXLAN itself provides the data plane encapsulation for creating overlay networks over an existing Layer 3 infrastructure. It extends Layer 2 segments across Layer 3 boundaries.
+
+- **BGP:** MP-BGP, in the context of EVPN, serves as the control plane protocol for VXLAN networks. It facilitates the exchange of MAC address and routing information between VTEPs, enabling automatic tunnel establishment and efficient network operation.
+
+| Advantages of EVPN in VXLAN                             | Description                                                                                         |
+|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| Automatic VTEP Discovery                                 | VTEPs (VXLAN Tunnel Endpoints) can be dynamically discovered through BGP, simplifying network deployment and scalability.                                          |
+| Reduced Flooding Traffic                                | Unlike traditional VXLAN deployments where MAC addresses are learned through flooding (data plane), EVPN uses BGP to propagate this information (control plane), reducing unnecessary traffic and improving network efficiency. |
+| Support for Layer 2 and Layer 3                         | EVPN supports both Layer 2 MAC address learning and Layer 3 IP routing information within the same overlay network, making it versatile for various network architectures.                                                                                                            |
+
+## OSPF
+
+**OSPF** (Open Shortest Path First) is a routing protocol used within larger autonomous systems (ASes) or networks to efficiently exchange routing information and compute the best paths for routing IP packets. It operates within the Internet Protocol Suite's Internet Layer (Layer 3) and is categorized as an Interior Gateway Protocol (IGP), meaning it is used for routing within a single autonomous system.
+
+An IGP that uses link-state routing to maintain a map of the network and calculate the shortest path using **Dijkstra's algorithm**.
 
 ### Key Components
 
@@ -48,6 +112,13 @@ This project uses a "spine-and-leaf" architecture, popular in data centers for i
 - **One main router** acting as a route reflector (spine): This central router will manage and distribute routing information to all connected leaf routers.
 - **Three sub-routers** acting as leafs (VTEPs): These leaf routers will connect to the spine and each other, forming the edges of the network where hosts connect.
 - **Three hosts**: Each host will be connected to a different leaf router.
+
+### BGP Route Reflection
+
+Route reflection is a method that allows a route reflector (RR) to reflect BGP routes to its clients without requiring full mesh connectivity among all routers in the network. In a typical BGP setup, all routers would need to peer with each other directly (full mesh) to exchange routing information. This can become impractical and inefficient in large networks.
+
+In a spine-and-leaf architecture, route reflection is configured on the spine routers (route reflectors). These routers manage the distribution of BGP routes, including EVPN routes, to leaf routers (VTEPs). This setup ensures efficient communication and optimal routing across your network topology.
+
 
 ### Benefits of Spine-and-Leaf Architecture
 
