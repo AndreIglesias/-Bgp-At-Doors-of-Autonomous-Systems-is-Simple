@@ -404,6 +404,11 @@ router ospf
     network 0.0.0.0/0 area 0
 ```
 
+Show route types on the leafs.
+```bash
+show bgp l2vpn evpn
+```
+
 <details>
 <summary><b>Configuration Explanation (Line by Line)</b></summary>
 
