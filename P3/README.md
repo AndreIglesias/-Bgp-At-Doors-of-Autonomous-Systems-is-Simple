@@ -21,24 +21,15 @@ Border Gateway Protocol (**BGP**) is a standardized exterior gateway protocol (*
 
 ### Type 2 and 3 Routes
 
-| Feature                  | Type 2 Route                                        | Type 3 Route                                      |
-|--------------------------|-----------------------------------------------------|---------------------------------------------------|
-| **Layer of Connectivity**| Layer 2 (MAC address reachability)                  | Layer 3 (IP address reachability)                 |
-| **Usage**                | Used in Layer 2 VPN services (BGP/MPLS VPN, EVPN)   | Used in general IP routing (Internet, enterprise networks) |
-| **Attributes**           | - MAC address<br>- VNI (in VXLAN deployments)<br>- Other Layer 2 specific parameters | - IP prefix<br>- Subnet mask<br>- Next-hop IP address<br>- AS path<br>- Other BGP attributes for IP routing |
-| **Typical Deployment**   | Data centers, multi-tenant environments             | Internet service providers, enterprise networks   |
-| **Example Scenario**     | - Extending Layer 2 networks across Layer 3 boundaries<br>- Providing VLAN-like services over WAN<br>- Multi-tenant environments | - Advertising IP prefixes to enable end-to-end connectivity<br>- Optimizing paths across AS boundaries          |
+| **Feature**           | **EVPN Type 2 Routes**                                  | **EVPN Type 3 Routes**                                 |
+|-----------------------|--------------------------------------------------------|-------------------------------------------------------|
+| **Purpose**           | Advertise MAC addresses and optionally IP addresses    | Advertise VNIs (VXLAN Network Identifiers) and multicast groups |
+| **Route Format**      | `[2]:[EthTag]:[MAClen]:[MAC]:[IPlen]:[IP]`              | `[3]:[EthTag]:[IPlen]:[OrigIP]`                        |
+| **Usage**             | MAC/IP advertisement to map a MAC address to a VTEP    | Inclusive multicast route for VTEP to distribute VXLAN segments |
+| **Main Components**   | Ethernet Tag, MAC address, optional IP address          | Ethernet Tag, IP address of the originating VTEP       |
+| **Example Use Case**  | Connecting end-host MAC addresses across different VTEPs | Establishing VNI reachability and multicast group management |
+| **Information Carried**| End-host MAC addresses, optionally with IPs           | VNI and originating IP address for multicast group    |
 
-### Explanation:
-- **Layer of Connectivity**: Type 2 routes deal with Layer 2 MAC addresses and VXLAN-specific identifiers (VNI), facilitating connectivity at the data link layer. Type 3 routes, on the other hand, focus on IP address reachability, enabling network layer connectivity across diverse networks.
-  
-- **Usage**: Type 2 routes are crucial for VPN services that require virtualized Layer 2 connectivity, such as BGP/MPLS VPNs and Ethernet VPNs (EVPN). Type 3 routes are foundational in Internet routing and enterprise networks for IP address management and routing.
-  
-- **Attributes**: Type 2 routes carry MAC addresses, VNIs in VXLAN, and specific Layer 2 parameters. Type 3 routes include IP prefixes, subnet masks, next-hop addresses, AS paths, and other BGP attributes essential for IP routing decisions.
-
-- **Typical Deployment**: Type 2 routes are commonly deployed in data centers and multi-tenant environments where virtualized Layer 2 networks are needed. Type 3 routes are used extensively by ISPs and large enterprises to manage IP routing across global networks.
-
-- **Example Scenario**: Type 2 routes facilitate extending Layer 2 networks over Layer 3 infrastructure, providing VLAN-like services across WANs and supporting multi-tenancy scenarios. Type 3 routes enable ISPs to advertise IP prefixes for efficient routing across the Internet and within enterprise networks.
 
 ## EVPN
 
